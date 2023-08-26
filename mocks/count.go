@@ -17,8 +17,18 @@ type Sleeper interface {
 }
 type SleeperDefault struct{}
 
+// sleep field is a function that can be replaced by
+type SleeperCustom struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
+
 func (d *SleeperDefault) Sleep() {
 	time.Sleep(1 * time.Second)
+}
+
+func (d *SleeperCustom) Sleep() {
+	d.sleep(d.duration)
 }
 
 func Count(out io.Writer, sleeper Sleeper) {
@@ -32,6 +42,6 @@ func Count(out io.Writer, sleeper Sleeper) {
 }
 
 func main() {
-	sleeper := &SleeperDefault{}
+	sleeper := &SleeperCustom{1 * time.Second, time.Sleep}
 	Count(os.Stdout, sleeper)
 }

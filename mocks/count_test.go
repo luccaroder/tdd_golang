@@ -3,12 +3,18 @@ package main
 import (
 	"bytes"
 	"testing"
+	"time"
 
 	"gotest.tools/assert"
 )
 
 type SpyOperationCount struct {
 	Calls []string
+}
+
+// stub to grant that curtom sleeper is called
+type TimeSpy struct {
+	sleepDuration time.Duration
 }
 
 func (s *SpyOperationCount) Sleep() {
@@ -18,6 +24,11 @@ func (s *SpyOperationCount) Sleep() {
 func (s *SpyOperationCount) Write(p []byte) (n int, err error) {
 	s.Calls = append(s.Calls, write)
 	return
+}
+
+// sleep has function to simulate time.Sleep
+func (t *TimeSpy) Sleep(duration time.Duration) {
+	t.sleepDuration = duration
 }
 
 func TestCount(t *testing.T) {
@@ -52,6 +63,14 @@ Go!`
 
 		assert.DeepEqual(t, SpyOperationCount.Calls, want)
 	})
+}
+
+func TestCustomSleeper(t *testing.T) {
+	sleepTime := 5 * time.Second
+	spyTime := &TimeSpy{}
+	sleeper := &SleeperCustom{sleepTime, spyTime.Sleep}
+	sleeper.Sleep()
+	assert.Equal(t, spyTime.sleepDuration, sleepTime)
 }
 
 const (
