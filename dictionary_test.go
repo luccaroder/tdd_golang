@@ -8,33 +8,52 @@ import (
 
 func TestSearch(t *testing.T) {
 	dictionary := Dictionary{"test": "this is just a test"}
-	type errorTestCases struct {
-		description string
-		word        string
-		want        string
-		wantErr     error
-	}
 
-	for _, tt := range []errorTestCases{
-		{
-			description: "known word",
-			word:        "test",
-			want:        "this is just a test",
-			wantErr:     nil,
-		},
-		{
-			description: "unknown word",
-			word:        "unknown",
-			want:        "",
-			wantErr:     ErrNotFound,
-		},
-	} {
-		t.Run(tt.description, func(t *testing.T) {
-			got, err := dictionary.Search(tt.word)
-			assertStrings(t, got, tt.want)
-			assertError(t, err, tt.wantErr)
-		})
-	}
+	t.Run("known word", func(t *testing.T) {
+		want := "this is just a test"
+		got, _ := dictionary.Search("test")
+		assertStrings(t, got, want)
+	})
+
+	t.Run("unknown word", func(t *testing.T) {
+		_, err := dictionary.Search("unknown")
+		assertError(t, err, ErrNotFound)
+	})
+
+	t.Run("add word", func(t *testing.T) {
+		want := "other test"
+		err := dictionary.Add("other", want)
+		got, _ := dictionary.Search("other")
+		assertError(t, err, nil)
+		assertStrings(t, got, want)
+	})
+
+	t.Run("add existing word", func(t *testing.T) {
+		dictionary := Dictionary{"test": "this is just a test"}
+		err := dictionary.Add("test", "this is just a test")
+		assertError(t, err, ErrWordExists)
+	})
+
+	t.Run("update word", func(t *testing.T) {
+		dictionary := Dictionary{"test": "this is just a test"}
+		want := "this is just a test updated"
+		err := dictionary.Update("test", want)
+		got, _ := dictionary.Search("test")
+		assertError(t, err, nil)
+		assertStrings(t, got, want)
+	})
+
+	t.Run("update not existing word", func(t *testing.T) {
+		dictionary := Dictionary{"test": "this is just a test"}
+		err := dictionary.Update("other", "this is just a test")
+		assertError(t, err, ErrNotExists)
+	})
+
+	t.Run("delete word", func(t *testing.T) {
+		dictionary := Dictionary{"test": "this is just a test"}
+		err := dictionary.Delete("test")
+		assertError(t, err, nil)
+	})
 }
 
 func assertStrings(t *testing.T, got, want string) {
