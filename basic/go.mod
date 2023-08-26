@@ -1,4 +1,4 @@
-module example.com/tdd
+module tdd/basic
 
 go 1.20
 
