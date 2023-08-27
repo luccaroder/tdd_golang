@@ -5,4 +5,5 @@ use (
 	./concurrence
 	./injection_dependency
 	./mocks
+	./select
 )
