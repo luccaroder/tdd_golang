@@ -7,4 +7,5 @@ use (
 	./mocks
 	./reflection
 	./select
+	./refactor
 )
