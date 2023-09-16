@@ -11,13 +11,13 @@ import (
 func TestValidate(t *testing.T) {
 	scenarios := []struct {
 		Name    string
-		input   []Rules
+		input   []RulesInput
 		wantErr *rules.RuleErrors
 	}{
 		{
 			Name:    "should return error when phone number and email are empties",
-			input:   []Rules{&rules.Phone{Number: ""}, &rules.Email{Value: ""}},
-			wantErr: &rules.RuleErrors{Errors: []error{rules.ErrPhoneRequired, rules.ErrEmailRequired, rules.ErrEmailInvalid}},
+			input:   []RulesInput{{Type: rules.EmailValidate, Value: ""}, {Type: rules.PhoneValidate, Value: ""}},
+			wantErr: &rules.RuleErrors{Errors: []error{rules.ErrEmailRequired, rules.ErrEmailInvalid, rules.ErrPhoneRequired}},
 		},
 	}
 	for _, s := range scenarios {

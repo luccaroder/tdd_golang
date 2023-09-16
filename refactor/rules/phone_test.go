@@ -14,12 +14,12 @@ func TestPhone(t *testing.T) {
 	}{
 		{
 			Name:    "should return error when phone number is empty",
-			input:   Phone{Number: ""},
+			input:   Phone{Value: ""},
 			wantErr: &RuleErrors{Errors: []error{ErrPhoneRequired}},
 		},
 		{
 			Name:    "should return empty error when has an valid phone number",
-			input:   Phone{Number: "1888888"},
+			input:   Phone{Value: "1888888"},
 			wantErr: &RuleErrors{Errors: []error{}},
 		},
 	}

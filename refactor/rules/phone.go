@@ -1,13 +1,13 @@
 package rules
 
 type Phone struct {
-	Number string
+	Value string
 }
 
 func (p *Phone) IsValid() *RuleErrors {
 	errs := make([]error, 0)
 
-	if p.Number == "" {
+	if p.Value == "" {
 		errs = append(errs, ErrPhoneRequired)
 	}
 
