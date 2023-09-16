@@ -4,7 +4,7 @@ type Phone struct {
 	Number string
 }
 
-func (p *Phone) IsValid() []error {
+func (p *Phone) IsValid() *RuleErrors {
 	errs := make([]error, 0)
 
 	if p.Number == "" {
@@ -12,7 +12,7 @@ func (p *Phone) IsValid() []error {
 	}
 
 	if len(errs) > 0 {
-		return errs
+		return &RuleErrors{Errors: errs}
 	}
 
 	return nil
